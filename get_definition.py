@@ -8,15 +8,12 @@ def get_filename(word):
 
 def define(word, filename):
     with open(filename) as f:
-        print(filename, "opened")
         definitions = ''
         soup = BeautifulSoup(f, 'html.parser')
         for line in soup.body.find_all('p'):
-            print(line.b.get_text())
-            if line.b and line.b.get_text() == word:
-                definitions = definitions + "\n  -" + line.get_text().strip(word)
-            else:
-                definitions = "No word found"
-
+            found = line.b.get_text().title() == word
+            if found:
+                definitions = definitions + "\n  -" + line.get_text().replace(word, '')
+                
         return definitions
 
