@@ -1,24 +1,56 @@
-import json
-# try to use csv
+"""Functions necessary to record the word to vocabulary file if the user desires."""
 
-filename = "myVocabs.json"
-counter = 1
+import csv
+import os.path
 
-def save_word(word):
-    if not present(word):
-        data = {counter: word}
-        with open(filename, 'a') as f:
-            json.dump(data, f, indent=3)
-            print("The word has been added.")
-    else:            
-        print("The word already exist.")
+fieldnames = ['id', 'word']
+filename = "myVocabs.csv"
 
 def present(word):
-    with open(filename) as f:
-        words = json.load(f)
-        if word in words.values():
-            return True
+    """Checks if the word is already present in the vocabulary record."""
+    
+    with open(filename) as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            if row['word'] == word:
+                return True
+        
         return False
+
+def save_word(word):
+    "Add the word to vocabulary if user desires and not yet existing."
+
+    if not present(word):
+        with open(filename, 'a', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            id = get_id()
+            writer.writerow({'id': id, 'word': word})
+            print("The word '{}' has been added.".format(word))
+
+    else:            
+        print("'{}' ALREADY exists.".format(word))
+
+def create_vocab_file():
+    """Create the vocab file and write the header keys."""
+
+    if not vocab_file_present():
+        with open(filename, 'w', newline='') as csvfile:
+            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+            writer.writeheader()
+            print("Vocabulary file has been created.")
+
+def vocab_file_present():
+    """Returns True if the vocab file already exist, else False."""
+
+    return os.path.isfile(filename)
+
+def get_id():
+    """Returns the id based on the number of lines in vocabfile."""
+
+    with open(filename) as csvfile:
+        reader = csv.DictReader(csvfile)
+        id = len(list(reader)) + 1
+        return id
 
 
 

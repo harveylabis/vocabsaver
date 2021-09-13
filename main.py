@@ -1,6 +1,6 @@
-# ask for the word
+import sys
 from get_definition import define, get_filename
-from save_word import save_word
+from save_word import save_word, vocab_file_present, create_vocab_file
 
 word = input("Enter a word: ")
 word = word.title()
@@ -9,9 +9,12 @@ word = word.title()
 filename = get_filename(word)
 definition = define(word, filename)
 
-# print the definition
-print(word)
-print(definition)
+# print the definition if found
+if definition:
+    print(word, end='')
+    print(definition)
+else:
+    sys.exit("Sorry, NO definition found.")
 
 # ask to save the word
 save = True
@@ -19,6 +22,12 @@ decision = input("Do you want to save this word? (y - yes): ")
 if decision.lower() != 'y':
     save = False
 
+# check if the file exists
+if vocab_file_present:
+    create_vocab_file()
+
 # save the word
-if definition and save:
+if save:
     save_word(word)
+else:
+    print("'{}' NOT added.".format(word))
