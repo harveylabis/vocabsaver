@@ -6,7 +6,7 @@ import os.path
 fieldnames = ['id', 'word']
 filename = "myVocabs.csv"
 
-def present(word):
+def word_present(word):
     """Checks if the word is already present in the vocabulary record."""
     
     with open(filename) as csvfile:
@@ -20,7 +20,7 @@ def present(word):
 def save_word(word):
     "Add the word to vocabulary if user desires and not yet existing."
 
-    if not present(word):
+    if not word_present(word):
         with open(filename, 'a', newline='') as csvfile:
             writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
             id = get_id()
@@ -33,11 +33,10 @@ def save_word(word):
 def create_vocab_file():
     """Create the vocab file and write the header keys."""
 
-    if not vocab_file_present():
-        with open(filename, 'w', newline='') as csvfile:
-            writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
-            writer.writeheader()
-            print("Vocabulary file has been created.")
+    with open(filename, 'w', newline='') as csvfile:
+        writer = csv.DictWriter(csvfile, fieldnames=fieldnames)
+        writer.writeheader()
+        print("Vocabulary file has been created.")
 
 def vocab_file_present():
     """Returns True if the vocab file already exist, else False."""
